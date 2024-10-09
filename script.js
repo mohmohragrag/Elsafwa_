@@ -94,7 +94,7 @@ function calculateWeight() {
                 }
 
                 // حساب الوزن بالجرام
-                weight = (outerDiameterSquare - thicknessSquare) * thicknessSquare * 0.025 * lengthSquare; // الوزن بالجرام
+                weight = (outerDiameterSquare - thicknessSquare) * thicknessSquare * 0.025 * (lengthSquare+20); // الوزن بالجرام
                 break;
 
             case "Hollow Structural Sections - Rectangular":
