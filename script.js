@@ -1,16 +1,16 @@
 const steelSections = {
-    "Steel Plates and Sheets": ["Length (mm)", "Width (mm)", "Thickness (mm)"],
-    "Chequered Steel Plates": ["Length (mm)", "Width (mm)", "Thickness (mm)"], // الصاج البقلاوه
-    "Seamless Steel Pipes - Circular": ["Length (mm)", "Outer Diameter (mm)", "Thickness (mm)"],
-    "Hollow Structural Sections - Square": ["Length (mm)", "Outer Diameter (mm)", "Thickness (mm)"],
-    "Hollow Structural Sections - Rectangular": ["Length (mm)", "Width (mm)", "Height (mm)", "Thickness (mm)"],
-    "Round Steel Bars": ["Length (mm)", "Diameter (mm)"],
-    "Square Steel Bars": ["Length (mm)", "Side Length (mm)"],
-    "Flat Bars": ["Length (mm)", "Width (mm)", "Thickness (mm)"],
-    "Equal Angles": ["Length (mm)", "Leg Length (mm)", "Thickness (mm)"],
-    "Unequal Angles": ["Length (mm)", "Leg Length 1 (mm)", "Leg Length 2 (mm)", "Thickness (mm)"],
-    "T-profile": ["Length (mm)", "Width (mm)", "Height (mm)", "Thickness (mm)"], // Added dimensions for T-profile
-    "Hexagonal Sections": ["Length (mm)", "Outer (mm)"]
+    "Steel Plates and Sheets": ["Length (m)", "Width (m)", "Thickness (mm)"],
+    "Chequered Steel Plates": ["Length (m)", "Width (m)", "Thickness (mm)"], // الصاج البقلاوه
+    "Seamless Steel Pipes - Circular": ["Length (m)", "Outer Diameter (mm)", "Thickness (mm)"],
+    "Hollow Structural Sections - Square": ["Length (m)", "Side Length (mm)", "Thickness (mm)"],
+    "Hollow Structural Sections - Rectangular": ["Length (m)", "Width (mm)", "Height (mm)", "Thickness (mm)"],
+    "Round Steel Bars": ["Length (m)", "Diameter (mm)"],
+    "Square Steel Bars": ["Length (m)", "Side Length (mm)"],
+    "Flat Bars": ["Length (m)", "Width (mm)", "Thickness (mm)"],
+    "Equal Angles": ["Length (m)", "Leg Length (mm)", "Thickness (mm)"],
+    "Unequal Angles": ["Length (m)", "Leg Length 1 (mm)", "Leg Length 2 (mm)", "Thickness (mm)"],
+    "T-profile": ["Length (m)", "Width (mm)", "Height (mm)", "Thickness (mm)"], // Added dimensions for T-profile
+    "Hexagonal Sections": ["Length (m)", "Side (mm)"]
 };
 
 function showFields() {
@@ -22,15 +22,15 @@ function showFields() {
     sectionImage.style.display = "none";
 
     if (sectionType === "UPN") {
-        window.location.href = "https://mohmohragrag.github.io/Elsafwa_Calculator/upn/index.html";
+        window.location.href = "file:///D:/app_steel/upn/index.html";
     } else if (sectionType === "IPN") {
-        window.location.href = "https://mohmohragrag.github.io/Elsafwa_Calculator/ipn/index.html";
+        window.location.href = "file:///D:/app_steel/ipn/index.html";
     } else if (sectionType === "IPE") {
-        window.location.href = "https://mohmohragrag.github.io/Elsafwa_Calculator/ipe/index.html";
+        window.location.href = "file:///D:/app_steel/ipe/index.html";
     } else if (sectionType === "HEA") {
-        window.location.href = "https://mohmohragrag.github.io/Elsafwa_Calculator/hea/index.html";
+        window.location.href = "file:///D:/app_steel/hea/index.html";
     } else if (sectionType === "HEB") {
-        window.location.href = "https://mohmohragrag.github.io/Elsafwa_Calculator/heb/index.html";
+        window.location.href = "file:///D:/app_steel/heb/index.html";
     } else if (sectionType && steelSections[sectionType]) {
         steelSections[sectionType].forEach(field => {
             const inputField = document.createElement("input");
@@ -40,8 +40,9 @@ function showFields() {
             fieldsContainer.appendChild(inputField);
         });
 
+        // هنا تضيف شرط للصورة الخاصة بـ T-profile
         if (sectionType === "T-profile") {
-            sectionImage.src = "images/t_profile.png";
+            sectionImage.src = `images/t_profile.png`;
         } else {
             sectionImage.src = `images/${sectionType.replace(/\s+/g, '_').toLowerCase()}.png`;
         }
@@ -94,7 +95,7 @@ function calculateWeight() {
                 }
 
                 // حساب الوزن بالجرام
-                weight = (outerDiameterSquare - thicknessSquare) * thicknessSquare * 0.025 * (lengthSquare+20); // الوزن بالجرام
+                weight = (outerDiameterSquare - thicknessSquare) * thicknessSquare * 0.025 * lengthSquare; // الوزن بالجرام
                 break;
 
             case "Hollow Structural Sections - Rectangular":
@@ -159,15 +160,11 @@ function calculateWeight() {
             }
         }
 
-        // تحويل الوزن من جرام إلى كيلوغرام
-        const weightInKg = weight / 1000; // التحويل من جرام إلى كيلوغرام
-
-        // حساب الكيلوغرامات والجرامات
-        const kg = Math.floor(weightInKg);
-        const grams = Math.round((weightInKg - kg) * 1000);
+        // تحويل الوزن من جرام إلى كيلوغرام وعرضه بحد أقصى رقمين عشريين
+        const weightInKg = (weight / 1000).toFixed(2); // تحويل من جرام إلى كيلوغرام وتحديد عدد الأرقام العشرية
 
         // عرض الوزن
-        document.getElementById("result").innerHTML = `Weight: ${kg} kg ${grams} g`;
+        document.getElementById("result").innerHTML = `Weight: ${weightInKg} kg`;
     } else {
         document.getElementById("result").innerHTML = "Please select a steel section type and enter the dimensions.";
     }
