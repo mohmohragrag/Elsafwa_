@@ -50,8 +50,7 @@ function showFields() {
     } else {
         alert("Invalid section type selected. Please choose a valid option.");
     }
-}
-function calculateWeight() {
+}function calculateWeight() {
     const sectionType = document.getElementById("sectionType").value;
     const fields = document.getElementById("fields").children;
     const density = 7850; // kg/m³ for steel
@@ -87,14 +86,6 @@ function calculateWeight() {
 
             case "Hollow Structural Sections - Square":
                 const [lengthSquare, outerDiameterSquare, thicknessSquare] = values;
-
-                // تحقق من أن القيم المدخلة أكبر من 0
-                if (lengthSquare <= 0 || outerDiameterSquare <= 0 || thicknessSquare <= 0) {
-                    document.getElementById("result").innerHTML = "Please enter valid dimensions greater than zero.";
-                    return;
-                }
-
-                // حساب الوزن بالجرام
                 weight = (outerDiameterSquare - thicknessSquare) * thicknessSquare * 0.025 * lengthSquare; // الوزن بالجرام
                 break;
 
@@ -125,46 +116,34 @@ function calculateWeight() {
 
             case "Unequal Angles": {
                 const [lengthUnequalAngle, legLength1, legLength2, thicknessUnequal] = values; // تأكد من إضافة thicknessUnequal هنا
-                // تحقق من أن القيم المدخلة صالحة
-                if (lengthUnequalAngle <= 0 || legLength1 <= 0 || legLength2 <= 0 || thicknessUnequal <= 0) {
-                    document.getElementById("result").innerHTML = "Please enter valid dimensions for all fields. Values must be greater than zero.";
-                    return; // توقف عن تنفيذ الكود إذا كانت القيم غير صالحة
-                }
-
-                // حساب الوزن
                 weight = lengthUnequalAngle *
                     ((legLength1 * thicknessUnequal) +
                         (legLength2 * thicknessUnequal) -
                         (thicknessUnequal ** 2)) *
                     density; // in grams
-
                 break;
             }
 
             case "T-profile":
                 const [lengthT, widthT, heightT, thicknessT] = values;
-                // Calculate the weight of the T-profile
                 weight = lengthT * ((widthT * heightT) - ((widthT - thicknessT) * (heightT - thicknessT))) * density; // in grams
                 break;
 
             case "Hexagonal Sections": {
                 const [lengthHexagon, flatToFlatDistance] = values; // المسافة بين الجوانب المتقابلة
                 const sideLength = flatToFlatDistance / Math.sqrt(3); // حساب طول الجانب بناءً على المسافة بين الجوانب المتقابلة
-
-                // Calculate the area of the hexagonal section
-                const areaHexagon = (3 * Math.sqrt(3) / 2) * Math.pow(sideLength, 2);
-
-                // Calculate the weight: طول × المساحة × الكثافة (الوزن = الطول × المساحة × الكثافة)
+                const areaHexagon = (3 * Math.sqrt(3) / 2) * Math.pow(sideLength, 2); // area of the hexagonal section
                 weight = lengthHexagon * areaHexagon * density; // in grams
                 break;
             }
         }
 
-        // تحويل الوزن من جرام إلى كيلوغرام وعرضه بحد أقصى رقمين عشريين
-        const weightInKg = (weight / 1000).toFixed(2); // تحويل من جرام إلى كيلوغرام وتحديد عدد الأرقام العشرية
+        // تحويل الوزن من جرامات إلى كيلوغرامات وأجزاء الجرام
+        const weightInKg = Math.floor(weight / 1000); // الجزء الخاص بالكيلوغرامات
+        const weightInGrams = (weight % 1000).toFixed(0); // الجزء الخاص بالجرامات (المتبقي)
 
-        // عرض الوزن
-        document.getElementById("result").innerHTML = `Weight: ${weightInKg} kg`;
+        // عرض الوزن بالشكل الصحيح
+        document.getElementById("result").innerHTML = `Weight: ${weightInKg}.${weightInGrams.padStart(3, '0')} kg`;
     } else {
         document.getElementById("result").innerHTML = "Please select a steel section type and enter the dimensions.";
     }
